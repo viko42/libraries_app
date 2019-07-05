@@ -1,0 +1,16 @@
+{
+  "name": "libraries_app",
+  "version": "1.0.8",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "upgrade": "sh ./run.sh"
+  },
+  "author": "K",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/firestore": "^2.2.1",
+    "jsonwebtoken": "^8.5.1"
+  }
+}
