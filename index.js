@@ -17,7 +17,7 @@ const getUser = ({ path }) => new Promise(async (resolve, reject) => {
   const user = await document.get().catch(reject);
   if (!user) return reject();
 
-  return resolve(path);
+  return resolve({ userPath: path, user: user.data() });
 });
 
 const verifyToken = token => new Promise((resolve, reject) => {
