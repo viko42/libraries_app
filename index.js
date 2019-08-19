@@ -1,7 +1,10 @@
 // Imports the Google Cloud client library.
 const { Firestore } = require('@google-cloud/firestore');
-const jwt = require('jsonwebtoken');
 
+const jwt = require('jsonwebtoken');
+const {Expo} = require('expo-server-sdk');
+
+// console.log(Expo);
 // Create a new client
 const firestore = new Firestore();
 
@@ -29,7 +32,44 @@ const verifyToken = token => new Promise((resolve, reject) => {
   });
 });
 
+const sendMobileNotification = async (path, {
+  title = 'Test notification',
+  sound = 'default',
+  data = {},
+}) => {
+  let expo = new Expo();
+
+  const { user } = await getUser({ path }).catch(() => null);
+
+  if (!user || !user.notificationToken) return false;
+
+  console.log(user.notificationToken);
+  if (!Expo.isExpoPushToken(user.notificationToken)) {
+    console.error(`Push token ${user.notificationToken} is not a valid Expo push token`);
+    // continue;
+  }
+
+  // let chunks = expo.chunkPushNotifications([
+  //   {
+  //     to: user.notificationToken,
+  //     sound,
+  //     body: title,
+  //     data,
+  //   }
+  // ]);
+  await expo.sendPushNotificationsAsync([{
+    to: user.notificationToken,
+    sound,
+    body: title,
+    data,
+  }]);
+
+  return true;
+};
+
 exports.auth_token = async (token) => {
   if (!token) return false;
   return verifyToken(token).catch(handleError);
 };
+
+exports.sendMobileNotification = sendMobileNotification;
