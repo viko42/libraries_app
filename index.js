@@ -67,9 +67,31 @@ const sendMobileNotification = async (path, {
   return true;
 };
 
+const addLog = async (message, path) => {
+  try {
+    const document = firestore.doc(path);
+
+    const documentSnapshot = await document.get();
+    if (!documentSnapshot) throw "document not found";
+
+    const { logs = [] } = documentSnapshot.data();
+
+    logs.push({
+      createdAt: new Date(),
+      message,
+    });
+
+    await document.update({ logs });
+    return ({ err: null, code: 200 });
+  } catch(e) {
+    return ({ err: e.message, code: 400 });
+  }
+};
+
 exports.auth_token = async (token) => {
   if (!token) return false;
   return verifyToken(token).catch(handleError);
 };
 
 exports.sendMobileNotification = sendMobileNotification;
+exports.addLog = addLog;
