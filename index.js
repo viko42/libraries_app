@@ -57,6 +57,7 @@ const sendMobileNotification = async (path, {
   //     data,
   //   }
   // ]);
+  data.title = title;
   await expo.sendPushNotificationsAsync([{
     to: user.notificationToken,
     sound,
